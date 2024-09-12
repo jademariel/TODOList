@@ -2,17 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const Task = (props) => {
-  const [showDelete, setShowDelete] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
 
   const handleLongPress = () => {
-    
-    setShowDelete(true);
+    setShowOptions(true); 
   };
 
   const handleDelete = () => {
-
     props.onDelete();
-    setShowDelete(false);
+    setShowOptions(false);
+  };
+
+  const handleEdit = () => {
+    props.onEdit();
+    setShowOptions(false);
   };
 
   return (
@@ -26,10 +29,15 @@ const Task = (props) => {
             {props.text}
           </Text>
         </View>
-        {showDelete && (
-          <TouchableOpacity onPress={handleDelete}>
-            <Text style={styles.deleteButton}>Delete</Text>
-          </TouchableOpacity>
+        {showOptions && (
+          <View style={styles.options}>
+            <TouchableOpacity onPress={handleEdit}>
+              <Text style={styles.editButton}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleDelete}>
+              <Text style={styles.deleteButton}>Delete</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </TouchableOpacity>
@@ -51,17 +59,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rectangle: {
-    width: 30, 
-    height: 30, 
-    backgroundColor: '#FFFFFF',  
+    width: 30,
+    height: 30,
+    backgroundColor: '#FFFFFF',
     opacity: 0.4,
-    borderRadius: 5, 
+    borderRadius: 5,
     marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkMark: {
-    color: '#FF0000',  
+    color: '#FF0000',
     fontSize: 18,
   },
   itemText: {
@@ -70,10 +78,18 @@ const styles = StyleSheet.create({
   checkedText: {
     color: '#C96868',
   },
+  options: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  editButton: {
+    color: '#3B82F6',
+    marginRight: 10,
+    fontWeight: 'bold',
+  },
   deleteButton: {
     color: '#C7253E',
     fontWeight: 'bold',
-    paddingLeft: 10,
   },
 });
 

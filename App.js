@@ -5,12 +5,27 @@ import Task from './components/Task';
 export default function App() {
   const [task, setTask] = useState('');
   const [taskItems, setTaskItems] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); 
 
   const handleAddTask = () => {
     Keyboard.dismiss();
     if (task) {
       setTaskItems([...taskItems, { text: task, isChecked: false }]);
       setTask(''); 
+    }
+  };
+
+  const handleSaveTask = () => {
+    Keyboard.dismiss();
+    if (task && editIndex !== null) {
+      let itemsCopy = [...taskItems];
+      itemsCopy[editIndex].text = task;
+      setTaskItems(itemsCopy);
+      setTask('');
+      setIsEditing(false);
+      setEditIndex(null);
     }
   };
 
@@ -26,41 +41,76 @@ export default function App() {
     setTaskItems(itemsCopy);
   };
 
+  const editTask = (index) => {
+    setTask(taskItems[index].text);
+    setIsEditing(true);
+    setEditIndex(index);
+  };
+
+  const filteredTasks = taskItems.filter(item =>
+    item.text.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       {/* Today's Tasks */}
       <View style={styles.taskWrapper}>
         <Text style={styles.sectionTitle}>TO DO List</Text>
+        
+        {/* Search Bar */}
+        <View style={styles.searchWrapper}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+
         <View style={styles.items}>
           {/* Task rendering */}
-          {taskItems.map((item, index) => (
+          {filteredTasks.map((item, index) => (
             <Task
               key={index}
               text={item.text}
               isChecked={item.isChecked}
               onCheck={() => completeTask(index)}
               onDelete={() => deleteTask(index)}
+              onEdit={() => editTask(index)} 
             />
           ))}
         </View>
       </View>
 
-      {/* Write a task */}
+      {/* Write or Edit a task */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.writeTaskWrapper}
       >
         <TextInput
           style={styles.input}
-          placeholder="What's on today? Write a task"
+          placeholder={isEditing ? "Edit task" : "What's on today? Write a task"}
           value={task}
           onChangeText={(text) => setTask(text)}
         />
-        <TouchableOpacity onPress={handleAddTask}>
-          <View style={styles.addWrapper}>
-            <Text style={styles.addText}>+</Text>
-          </View>
-        </TouchableOpacity>
+        
+        {/* Add Task Button */}
+        {!isEditing && (
+          <TouchableOpacity onPress={handleAddTask}>
+            <View style={styles.addWrapper}>
+              <Text style={styles.addText}>+</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+
+        {/* Save Task Button (for editing) */}
+        {isEditing && (
+          <TouchableOpacity onPress={handleSaveTask}>
+            <View style={styles.saveWrapper}>
+              <Text style={styles.addText}>✔</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </KeyboardAvoidingView>
     </View>
   );
@@ -79,14 +129,27 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     fontFamily: Platform.OS === 'ios' ? 'Times New Roman' : 'serif',
-    color: '#7EACB5', 
+    color: '#7EACB5',
     textShadowColor: '#000',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
     marginBottom: 20,
   },
+  searchWrapper: {
+    marginBottom: 20, 
+  },
+  searchInput: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#FFF4EA',
+    borderRadius: 10,
+    borderColor: '#CDC2A5',
+    borderWidth: 1,
+    width: '80%',
+    fontFamily: Platform.OS === 'ios' ? 'Times New Roman' : 'serif',
+  },
   items: {
-    marginTop: 30,
+    marginTop: 20,
   },
   writeTaskWrapper: {
     position: 'absolute',
@@ -101,7 +164,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: '#FFF4EA',
     borderRadius: 60,
-    borderColor: '#3C3D37',
+    borderColor: '#CDC2A5',
     borderWidth: 1,
     width: 250,
     fontFamily: Platform.OS === 'ios' ? 'Times New Roman' : 'serif',
@@ -113,14 +176,23 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#3C3D37',
+    borderColor: '#CDC2A5',
+    borderWidth: 1,
+  },
+  saveWrapper: {
+    width: 60,
+    height: 60,
+    backgroundColor: '#DEE5D4',
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#CDC2A5',
     borderWidth: 1,
   },
   addText: {
     color: '#000000',
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     fontFamily: Platform.OS === 'ios' ? 'Times New Roman' : 'serif',
   },
 });
-
