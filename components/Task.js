@@ -5,12 +5,12 @@ const Task = (props) => {
   const [showDelete, setShowDelete] = useState(false);
 
   const handleLongPress = () => {
-    // Show the delete button when long-pressed
+    
     setShowDelete(true);
   };
 
   const handleDelete = () => {
-    // Trigger the delete function and hide the delete button
+
     props.onDelete();
     setShowDelete(false);
   };
@@ -51,11 +51,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rectangle: {
-    width: 30, // Adjust width as needed
-    height: 30, // Adjust height as needed
-    backgroundColor: '#FFFFFF',  // Changed to white
+    width: 30, 
+    height: 30, 
+    backgroundColor: '#FFFFFF',  
     opacity: 0.4,
-    borderRadius: 5, // Slightly rounded corners
+    borderRadius: 5, 
     marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',

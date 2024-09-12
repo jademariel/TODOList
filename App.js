@@ -10,19 +10,19 @@ export default function App() {
     Keyboard.dismiss();
     if (task) {
       setTaskItems([...taskItems, { text: task, isChecked: false }]);
-      setTask(''); // Clear input field after adding task
+      setTask(''); 
     }
   };
 
   const completeTask = (index) => {
     let itemsCopy = [...taskItems];
-    itemsCopy[index].isChecked = !itemsCopy[index].isChecked; // Toggle checked state
+    itemsCopy[index].isChecked = !itemsCopy[index].isChecked; 
     setTaskItems(itemsCopy);
   };
 
   const deleteTask = (index) => {
     let itemsCopy = [...taskItems];
-    itemsCopy.splice(index, 1); // Remove the task
+    itemsCopy.splice(index, 1); 
     setTaskItems(itemsCopy);
   };
 
