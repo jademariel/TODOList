@@ -1,22 +1,46 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';  
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
 const Task = (props) => {
+  const [showDelete, setShowDelete] = useState(false);
+
+  const handleLongPress = () => {
+    // Show the delete button when long-pressed
+    setShowDelete(true);
+  };
+
+  const handleDelete = () => {
+    // Trigger the delete function and hide the delete button
+    props.onDelete();
+    setShowDelete(false);
+  };
+
   return (
-    <View style={styles.item}>
-      <View style={styles.itemLeft}>
-        <View style={styles.square}></View>
-        <Text style={styles.itemText}>{props.text}</Text>
+    <TouchableOpacity onPress={props.onCheck} onLongPress={handleLongPress}>
+      <View style={styles.item}>
+        <View style={styles.itemLeft}>
+          <View style={styles.rectangle}>
+            {props.isChecked ? <Text style={styles.checkMark}>✔</Text> : null}
+          </View>
+          <Text style={[styles.itemText, props.isChecked && styles.checkedText]}>
+            {props.text}
+          </Text>
+        </View>
+        {showDelete && (
+          <TouchableOpacity onPress={handleDelete}>
+            <Text style={styles.deleteButton}>Delete</Text>
+          </TouchableOpacity>
+        )}
       </View>
-      <View style={styles.circular}></View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  item: { 
+  item: {
     backgroundColor: '#F7EFE5',
     padding: 15,
-    borderRadius: 10, 
+    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -25,25 +49,31 @@ const styles = StyleSheet.create({
   itemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
   },
-  square: {
-    width: 24,
-    height: 24,
-    backgroundColor: '#185519',
+  rectangle: {
+    width: 30, // Adjust width as needed
+    height: 30, // Adjust height as needed
+    backgroundColor: '#FFFFFF',  // Changed to white
     opacity: 0.4,
-    borderRadius: 5,
+    borderRadius: 5, // Slightly rounded corners
     marginRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkMark: {
+    color: '#FF0000',  
+    fontSize: 18,
   },
   itemText: {
-    maxWidth: '80%',  
+    maxWidth: '80%',
   },
-  circular: {
-    height: 12,
-    width: 12,  
-    borderColor: '#FF8A8A',
-    borderWidth: 3,
-    borderRadius: 6,  
+  checkedText: {
+    color: '#C96868',
+  },
+  deleteButton: {
+    color: '#C7253E',
+    fontWeight: 'bold',
+    paddingLeft: 10,
   },
 });
 
